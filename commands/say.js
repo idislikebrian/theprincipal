@@ -41,12 +41,12 @@ module.exports={
             } else { 
             let msgArgs = args.slice(0).join(" ");
             
-            const Embeds = new Discord.MessageEmbed()
-                .setColor
+            const EmbedAnnounce = new Discord.MessageEmbed()
+                .setColor(0xFFC300)
                 .setTitle("❗ ANNOUNCEMENT ❗")
-                .setDescription(msgArgs);
+                .setDescription("msgArgs");
                 
-            message.channel.send(Embeds).then(MessageReaction => {
+            message.channel.send(EmbedAnnounce).then(MessageReaction => {
                 message.delete({ timeout: 3500, reason: 'It had to be done.' });
             } )
         }
