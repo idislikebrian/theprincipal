@@ -20,11 +20,6 @@ const Discord = require("discord.js");
 // }
 
 
-// module.exports.config = {
-//     name: "say",
-//     description: "sends a message that was inputted to a channel",
-// }
-
 module.exports={
     name: 'say',
     description: "Sends a message that was inputter to a channel.",
@@ -44,7 +39,7 @@ module.exports={
             const EmbedAnnounce = new Discord.MessageEmbed()
                 .setColor(0xFFC300)
                 .setTitle("❗ ANNOUNCEMENT ❗")
-                .setDescription("msgArgs");
+                .setDescription(msgArgs);
                 
             message.channel.send(EmbedAnnounce).then(MessageReaction => {
                 message.delete({ timeout: 3500, reason: 'It had to be done.' });
