@@ -21,7 +21,7 @@ module.exports={
             message.channel.send("📋 " + "**" + msgArgs + "**").then(MessageReaction => {
                 MessageReaction.react("👍");
                 MessageReaction.react("👎");
-                message.delete({ timeout: 5000, reason: 'It had to be done.' });
+                message.delete({ timeout: 3500, reason: 'It had to be done.' });
             } )
         }
     }

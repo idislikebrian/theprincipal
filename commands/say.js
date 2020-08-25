@@ -1,4 +1,12 @@
 const Discord = require("discord.js");
+const bot = new Client();
+
+module.exports.config = {
+    name: "say",
+    description: "sends a message that was inputted to a channel",
+    usage: "say",
+    accessableby: "Staff"
+}
 
 module.exports.run = async (bot, message, args) => {
 
@@ -17,8 +25,3 @@ module.exports.run = async (bot, message, args) => {
 }
 
 
-module.exports.config = {
-    name: "say",
-    description: "sends a message that was inputted to a channel",
-    
-}
