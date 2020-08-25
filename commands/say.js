@@ -37,11 +37,16 @@ module.exports={
                 .setDescription("Type *~say {your announcement goes here}* send an announcement");
                
             message.channel.send(Embed);
-
+            
             } else { 
             let msgArgs = args.slice(0).join(" ");
-
-            message.channel.send("❗ " + "**" + msgArgs + "**").then(MessageReaction => {
+            
+            const Embeds = new Discord.MessageEmbed()
+                .setColor
+                .setTitle("❗ ANNOUNCEMENT ❗")
+                .setDescription(msgArgs);
+                
+            message.channel.send(Embeds).then(MessageReaction => {
                 message.delete({ timeout: 3500, reason: 'It had to be done.' });
             } )
         }
