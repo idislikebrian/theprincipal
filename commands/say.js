@@ -23,7 +23,7 @@ module.exports={
                     .setColor(0xFF0000)
                     .setTitle("❗ ANNOUNCEMENT ❗")
                     .setDescription(msgArgs)
-                    .setAuthor("Some name", 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
+                    .setAuthor(message.author.tag, message.author.displayAvatarURL)
                     .setTimestamp();
                     
                 message.channel.send(EmbedAnnounce).then(MessageReaction => {
