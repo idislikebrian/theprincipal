@@ -37,6 +37,10 @@ client.on('message', message => {
         client.commands.get('say').execute(message, args);
         
     }
+    if (command === 'music'){
+        client.commands.get('musicPlayer').execute(message, args);
+        
+    }
 });
 
 client.login(process.env.token);
