@@ -1,4 +1,4 @@
-const { Client, RichEmbed, MessageReaction } = require('discord.js');
+const { Client, MessageEmbed, MessageReaction } = require('discord.js');
 const bot = new Client();
 const Discord = require("discord.js");
 
@@ -7,7 +7,7 @@ module.exports={
     description: "Sends a message that was inputted to a channel.",
     execute(message, args){
         console.log(args)
-        if(message.member.roles.find("name", "Admin")){
+        if(message.member.roles.find(r => r.name === "Admin")){
             if (args.length==0){
                 const Embed = new Discord.MessageEmbed()
                     .setColor(0xFFC300)

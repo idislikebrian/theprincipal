@@ -1,9 +1,8 @@
-const { Client, RichEmbed, MessageReaction } = require('discord.js');
+const { Client, MessageEmbed, MessageReaction } = require('discord.js');
 const bot = new Client();
 const Discord = require("discord.js");
 
 const ytdl = require('ytdl-core');
-const { MessageEmbed } = require('discord.js');
 
 module.exports = async (message) => {
     // remove '!' and 'music' from the message content and get the video url
