@@ -4,7 +4,7 @@ const Discord = require("discord.js");
 
 const ytdl = require('ytdl-core');
 
-module.exports = async (message) => {
+module.exports.execute = async (message) => {
     // remove '!' and 'music' from the message content and get the video url
     let musicLink = message.content.slice(1).split(' ').splice(1).shift();
 
