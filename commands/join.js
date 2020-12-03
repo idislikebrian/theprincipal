@@ -9,6 +9,7 @@ module.exports={
     execute(message, args){
         console.log(args)
         if(message.member.roles.cache.some(r => r.name === "Admin")){
+            console.log("DEBUG: if statement works")
             client.emit("guildMemberAdd", message.member);
         }
     }
