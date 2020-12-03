@@ -18,6 +18,19 @@ client.once('ready', () => {
     console.log('The Principal is online!');
 });
 
+//Welcome message\\
+client.on('guildMemberAdd', member => {
+    const inTheHouse = ["{}, I choose you!", "Silence fools! Bow! Lord {} is here!", "{}, reporting for duty!", "Everyone make some noise! {} is here!", "{}'s adventure is about to begin.", "{} comes in peace.", "Knock-knock. {} is here!"]
+    const randomMessage = inTheHouse[Math.floor(Math.random() * inTheHouse.length)]
+    const welcomeEmbed = new Discord.MessageEmbed()
+
+    welcomeEmbed.setColor('#5cf000')
+    welcomeEmbed.setTitle('**' + member.user.username + randomMessage + member.guild.memberCount + '** people')
+    welcomeEmbed.setImage('https://cdn.mos.cms.futurecdn.net/93GAa4wm3z4HbenzLbxWeQ-650-80.jpg.webp')
+
+    member.guild.channels.get('740979557133320312').send(welcomeEmbed) // replace with actual welcome
+})
+//Welcome messages\\
 
 client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
