@@ -9,10 +9,10 @@
   "author": "Brian Felix",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "^0.3.3",
     "discord.js": "^12.2.0",
     "ffmpeg-static": "^4.2.7",
     "ms": "^2.1.2",
+    "opusscript": "0.0.7",
     "ytdl-core": "^4.0.3"
   }
 }
