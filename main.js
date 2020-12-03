@@ -54,6 +54,10 @@ client.on('message', message => {
         client.commands.get('musicPlayer').execute(message, args);
         
     }
+    if (command === 'join'){
+        client.commands.get('join').execute(message, args);
+        
+    }
 });
 
 client.login(process.env.token);
