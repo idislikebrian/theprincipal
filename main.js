@@ -55,7 +55,7 @@ client.on('message', message => {
         
     }
     if (command === 'join'){
-        client.commands.get('join').execute(message, args);
+        client.commands.get('join').execute(message, args, client);
         
     }
 });
