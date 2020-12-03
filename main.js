@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-
 const client = new Discord.Client();
 
 const prefix = '~';
@@ -23,12 +22,14 @@ client.on('guildMemberAdd', member => {
     const inTheHouse = [`${member.user.username}, I choose you!`, `Silence fools! Bow! Lord ${member.user.username} is here!`, `${member.user.username}, reporting for duty!`, `Everyone make some noise! ${member.user.username} is here!`, `${member.user.username}'s adventure is about to begin.`, `${member.user.username} comes in peace.`, `Knock-knock. ${member.user.username} is here!`]
     const randomMessage = inTheHouse[Math.floor(Math.random() * inTheHouse.length)]
     const welcomeEmbed = new Discord.MessageEmbed()
-
+    console.log("DEBUG: choosing a random phrase")
     welcomeEmbed.setColor('#5cf000')
     welcomeEmbed.setTitle(randomMessage + '(number ' + member.guild.memberCount)
     welcomeEmbed.setImage('https://cdn.mos.cms.futurecdn.net/93GAa4wm3z4HbenzLbxWeQ-650-80.jpg.webp')
-
+    console.log("DEBUG: creating the embed")
+    console.log(member.guild.channels.cache.find(i => i.name === '🧪・testing'));
     member.guild.channels.cache.find(i => i.name === '🧪・testing').send(welcomeEmbed) // replace with actual welcome channelid
+    console.log("DEBUG: finding right channel")
 })
 //Welcome message\\
 
