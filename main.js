@@ -23,8 +23,7 @@ client.on('guildMemberAdd', member => {
     const randomMessage = inTheHouse[Math.floor(Math.random() * inTheHouse.length)]
     const welcomeEmbed = new Discord.MessageEmbed()
     welcomeEmbed.setColor('#5cf000')
-    console.log(member.guild.channels.cache.find(i => i.name === '🧪・testing'));
-    member.guild.channels.cache.find(i => i.name === '🧪・testing').send(welcomeEmbed) // replace with actual welcome channelid
+    member.guild.channels.cache.find(i => i.name === '🎉・new-members').send(welcomeEmbed) // replace with actual welcome channelid
 })
 
 client.on('message', message => {
