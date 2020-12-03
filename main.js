@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client({ partials: ['GUILD_MEMBER'] });
 
 const prefix = '~';
 
@@ -17,7 +17,6 @@ client.once('ready', () => {
     console.log('The Principal is online!');
 });
 
-//Welcome message\\
 client.on('guildMemberAdd', member => {
     const inTheHouse = [`${member.user.username}, I choose you!`, `Silence fools! Bow! Lord ${member.user.username} is here!`, `${member.user.username}, reporting for duty!`, `Everyone make some noise! ${member.user.username} is here!`, `${member.user.username}'s adventure is about to begin.`, `${member.user.username} comes in peace.`, `Knock-knock. ${member.user.username} is here!`]
     const randomMessage = inTheHouse[Math.floor(Math.random() * inTheHouse.length)]
@@ -31,7 +30,6 @@ client.on('guildMemberAdd', member => {
     member.guild.channels.cache.find(i => i.name === '🧪・testing').send(welcomeEmbed) // replace with actual welcome channelid
     console.log("DEBUG: finding right channel")
 })
-//Welcome message\\
 
 client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
