@@ -12,7 +12,6 @@ module.exports={
                 .setColor(0xFFC300)
                 .setTitle("Looking to make a poll?")
                 .setDescription("Type *~poll {your question goes here}* to initiate a simple yes or no poll");
-               
             message.channel.send(Embed);
 
             } else { 
