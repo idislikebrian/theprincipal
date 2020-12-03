@@ -15,6 +15,7 @@ for (const file of commandFiles) {
 }
 client.once('ready', () => {
     console.log('The Principal is online!');
+    bot.user.setActivity('YouTube', { type: 'WATCHING' });
 });
 
 client.on('guildMemberAdd', member => {
