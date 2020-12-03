@@ -22,7 +22,6 @@ module.exports={
                     .setTitle("❗ ANNOUNCEMENT ❗")
                     .setDescription(msgArgs)
                     .setAuthor(message.author.tag, message.author.displayAvatarURL)
-                    .setTimestamp();
                     
                 message.channel.send(EmbedAnnounce).then(MessageReaction => {
                     message.delete({ timeout: 1500, reason: 'It had to be done.' });
