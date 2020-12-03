@@ -1,8 +1,3 @@
-const { Client, MessageEmbed, MessageReaction } = require('discord.js');
-const bot = new Client();
-const Discord = require('discord.js');
-const client = new Discord.Client({ partials: ['GUILD_MEMBER'] });
-
 module.exports={
     name: 'join',
     description: "testing welcome command!",
