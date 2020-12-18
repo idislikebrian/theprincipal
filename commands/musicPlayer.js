@@ -24,7 +24,6 @@ module.exports={
 
                 let filter = (reaction, user) => !user.bot && user.id === message.author.id;
                 const reactionCollector = sentMusicEmbed.createReactionCollector(filter);
-                message.delete({ timeout: 3500, reason: 'It had to be done.' });
 
                 reactionCollector.on('collect', (reaction) => {
                     if (reaction.emoji.name === '⏸️') {
