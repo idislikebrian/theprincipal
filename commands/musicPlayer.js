@@ -3,7 +3,7 @@ const ytdl = require('ytdl-core');
 
 module.exports={
     name: 'musicPlayer',
-    description: "Helps you play some tunes",
+    description: "Helps you play music together",
     async execute (message, args){
         console.log(args)
         const voiceChannel = message.member.voice.channel;
@@ -14,7 +14,7 @@ module.exports={
                 const songInfo = await ytdl.getBasicInfo(message.content);
                 const musicEmbed = new MessageEmbed()
                     .setTitle('Music Player')
-                    .setImage(`${songInfo.videoDetails.thumbnail.thumbnails[0].url}`)
+                    .setImage(`${songInfo.videoDetails.thumbnail[0].url}`)
                     .setFooter(`${songInfo.videoDetails.title}`)
                     .setColor('BLUE');
 
@@ -24,6 +24,7 @@ module.exports={
 
                 let filter = (reaction, user) => !user.bot && user.id === message.author.id;
                 const reactionCollector = sentMusicEmbed.createReactionCollector(filter);
+                message.delete({ timeout: 3500, reason: 'It had to be done.' });
 
                 reactionCollector.on('collect', (reaction) => {
                     if (reaction.emoji.name === '⏸️') {
