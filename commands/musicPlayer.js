@@ -5,6 +5,7 @@ module.exports={
     name: 'musicPlayer',
     description: "Helps you play some tunes",
     async execute (message, args){
+        console.log(args)
         const voiceChannel = message.member.voice.channel;
         if (voiceChannel) {
             const connection = await voiceChannel.join();
