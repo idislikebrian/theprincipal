@@ -4,7 +4,7 @@ const ytdl = require('ytdl-core');
 module.exports={
     name: 'musicPlayer',
     description: "Helps you play some tunes",
-    execute (message, args){
+    async execute (message, args){
         const voiceChannel = message.member.voice.channel;
         if (voiceChannel) {
             const connection = await voiceChannel.join();
