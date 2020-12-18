@@ -2,9 +2,9 @@ const { MessageEmbed } = require('discord.js');
 const ytdl = require('ytdl-core');
 
 module.exports={
-    name: 'musicplayer',
-    description: "plays music in a voice channel.",
-    async execute (message, args){
+    name: 'musicPlayer',
+    description: "Helps you play some tunes",
+    execute (message, args){
         const voiceChannel = message.member.voice.channel;
         if (voiceChannel) {
             const connection = await voiceChannel.join();
