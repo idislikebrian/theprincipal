@@ -44,7 +44,7 @@ client.on('message', message => {
         client.commands.get('say').execute(message, args);
         
     }
-    if (command === 'music'){
+    if (command === 'musicPlayer'){
         client.commands.get('musicPlayer').execute(message, args);
         
     }
