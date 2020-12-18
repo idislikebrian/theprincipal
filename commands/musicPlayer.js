@@ -14,7 +14,7 @@ module.exports={
                 const songInfo = await ytdl.getBasicInfo(message.content);
                 const musicEmbed = new MessageEmbed()
                     .setTitle('Music Player')
-                    .setImage(`${songInfo.videoDetails.thumbnail[0].url}`)
+                    .setImage(`${songInfo.videoDetails.thumbnail.thumbnails[0].url}`)
                     .setFooter(`${songInfo.videoDetails.title}`)
                     .setColor('BLUE');
 
