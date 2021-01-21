@@ -21,8 +21,13 @@ client.once('ready', () => {
 client.on('guildMemberAdd', member => {
     const inTheHouse = [`${member.user.username}, I choose you!`, `Silence fools! Bow! Lord ${member.user.username} is here!`, `${member.user.username}, reporting for duty!`, `Everyone make some noise! ${member.user.username} is here!`, `${member.user.username}'s adventure is about to begin.`, `${member.user.username} comes in peace.`, `Knock-knock. ${member.user.username} is here!`]
     const randomMessage = inTheHouse[Math.floor(Math.random() * inTheHouse.length)]
+    const handshakes = [`https://media.tenor.com/images/180cdc8c0939a00e3674e7eeaf9056a3/tenor.gif`, `https://media.tenor.com/images/67e822adc41a34c44c66b998109cd92b/tenor.gif`, `https://media1.tenor.com/images/44830011193e0398e7464ed9a86a3643/tenor.gif`, `https://media.tenor.com/images/08469d2b5bfbe6cfbdea49dd40ae6a08/tenor.gif`, `https://media.tenor.com/images/fc9526c4dc48bce72a0639b29711d59c/tenor.gif`, `https://media0.giphy.com/media/l1IYhmLyuCfgPL16g/giphy.gif`, `https://media1.tenor.com/images/99af662eae886bacc009163ba3150168/tenor.gif?itemid=3846347`, `https://media1.tenor.com/images/73b5c90fc5d2400300292ea8027225c2/tenor.gif?itemid=3400269`]
+    const randomHandshake = handshakes[Math.floor(Math.random() * handshakes.length)]
     const welcomeEmbed = new Discord.MessageEmbed()
-    welcomeEmbed.setColor('#5cf000')
+        .setTitle("New Member Alert!")
+        .setColor('#5cf000')
+        .setDescription(randomMessage)
+        .setImage(randomHandshake)
     member.guild.channels.cache.find(i => i.name === '🎉・new-members').send(welcomeEmbed) // replace with actual welcome channelid
 })
 
