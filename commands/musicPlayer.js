@@ -18,18 +18,16 @@ module.exports={
             let song = {};
             
             if (connection) {
-                const dispatcher = connection.play(ytdl(message.content, { format: 'audio' }));
                 // searching for music via ytdl
                 if (ytdl.validateURL(args[0])) {
                     const songInfo = await ytdl.getInfo(args[0]);
                     song = { title: songInfo.videoDetails.title, url: songInfo.videoDetails.video_url }
                 } else {
-                    //If the video is not a URL then use keywords to find a video.
+                    // if the video is not a URL then use keywords to find a video
                     const videoFinder = async (query) =>{
                         const videoResult = await ytSearch(query);
                         return (videoResult.videos.length > 1) ? videoResult.videos[0] : null;
                     }
-                    
                     const video = await videoFinder(args.join(' '));
                     if(video){
                         song = { title: video.title, url: video.url }
@@ -37,7 +35,7 @@ module.exports={
                     message.channel.send('Error finding that song.');
                     }
                 } 
-
+                const dispatcher = connection.play(ytdl(song.url, { format: 'audioonly' }));
                 const musicEmbed = new MessageEmbed()
                     .setTitle('📻 Jukebox')
                     .setImage(`${songInfo.videoDetails.thumbnail.thumbnails[0].url}`)

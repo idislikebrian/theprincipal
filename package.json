@@ -15,6 +15,6 @@
     "fluent-ffmpeg": "^2.1.2",
     "ms": "^2.1.2",
     "opusscript": "0.0.7",
-    "ytdl-core": "^4.2.0"
+    "ytdl-core": "^4.4.5"
   }
 }
