@@ -8,25 +8,28 @@ module.exports={
     description: "Helps you play music together",
     async execute (message, args){
         console.log(args)
+        
         const serverQueue = queue.get(message.guild.id);
         const voiceChannel = message.member.voice.channel;
+        
         if (voiceChannel) {
             const connection = await voiceChannel.join();
             if (!args.length) return message.channel.send('You need to send a link to a YouTube video as well.');
             let song = {};
+            
             if (connection) {
                 const dispatcher = connection.play(ytdl(message.content, { format: 'audio' }));
                 const songInfo = await ytdl.getBasicInfo(message.content);
                 const musicEmbed = new MessageEmbed()
                     .setTitle('📻 Jukebox')
                     .setImage(`${songInfo.videoDetails.thumbnail.thumbnails[0].url}`)
-                    .setFooter(`**Now Playing:** ${songInfo.videoDetails.title}`)
+                    .setDescription(`**Now Playing**: ${songInfo.videoDetails.title}`)
                     .setTimestamp()
                     .setColor('BLUE');
 
                 const sentMusicEmbed = await message.channel.send(musicEmbed);
-                sentMusicEmbed.react('⏹️');
                 sentMusicEmbed.react('⏸️');
+                sentMusicEmbed.react('⏹️');
                 sentMusicEmbed.react('⏭');
 
                 let filter = (reaction, user) => !user.bot && user.id === message.author.id;
@@ -67,8 +70,9 @@ module.exports={
         }
     }
 };
-/* working on dispatcher WIP WIP WIP WIP WIP
-const juke = async (guild, song) => {
+
+/* WIP WIP WIP
+    const juke = async (guild, song) => {
     const songQueue = queue.get(guild.id);
 
     if (!song) {
@@ -83,4 +87,44 @@ const juke = async (guild, song) => {
         juke(guild, songQueue.songs[0]);
     });
     await songQueue.text_channel.send(`🎶 Now Playing`)
-} */
+}
+
+        // if song is already playing, do not stop current song >> add to queue
+        // else
+
+        // searching for music via ytdl
+        if (ytdl.validateURL(args[0])) {
+            const songInfo = await ytdl.getInfo(args[0]);
+            song = { title: songInfo.videoDetails.title, url: songInfo.videoDetails.video_url }
+        } else {
+            //If the video is not a URL then use keywords to find a video.
+            const videoFinder = async (query) =>{
+                const videoResult = await ytSearch(query);
+                return (videoResult.videos.length > 1) ? videoResult.videos[0] : null;
+            }
+            const video = await videoFinder(args.join(' '));
+            if(video){
+                song = { title: video.title, url: video.url }
+            } else {
+                message.channel.send('Error finding that song.');
+            }
+        // If there is no queue in place, construct one
+        if(!serverQueue){
+            const queueConstructor = {
+                voiceChannel: voiceChannel,
+                textChannel: message.channel,
+                connection: null,
+                songs:[]
+            }
+
+            queue.set(message.guild.id, queueConstructor);
+            queueConstructor.songs.push(song);
+
+            try {
+                // connecting to voice channel??
+            }
+        } else {
+            serverQueue.songs.push(song);
+            return message.channel.send(`👍 **${song.title}** has been added to the queue!`);
+        }
+        } */
