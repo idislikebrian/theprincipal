@@ -2,6 +2,8 @@ const { MessageEmbed } = require('discord.js');
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
 
+const queue = new Map();
+
 module.exports={
     name: 'musicPlayer',
     description: "Helps you play music together",
@@ -11,33 +13,22 @@ module.exports={
         if (voiceChannel) {
             const connection = await voiceChannel.join();
             if (connection) {
-                // searching for music via ytdl
-                if (ytdl.validateURL(message.content)) {
-                    const songInfo = await ytdl.getBasicInfo(message.content);
-                    song = { title: songInfo.videoDetails.title, url: songInfo.videoDetails.video_url }
-                } else {
-                    // if the video is not a URL then use keywords to find a video
-                    const videoFinder = async (query) =>{
-                        const videoResult = await ytSearch(query);
-                        return (videoResult.videos.length > 1) ? videoResult.videos[0] : null;
-                    }
-                    const video = await videoFinder(args.join(' '));
-                    if(video){
-                        song = { title: video.title, url: video.url }
-                    } else {
-                    message.channel.send('Error finding that song.');
-                    }
-                } 
-                const dispatcher = connection.play(ytdl(song.url, { format: 'audioonly' }));
+                if (!args.length) return message.channel.send('You need to send a link to a YouTube video as well.');
+                let song = {};
+                
+                const dispatcher = connection.play(ytdl(message.content, { format: 'audioonly' }));
+                const songInfo = await ytdl.getBasicInfo(message.content);
                 const musicEmbed = new MessageEmbed()
-                    .setTitle('Music Player')
+                    .setTitle('📻 Jukebox')
                     .setImage(`${songInfo.videoDetails.thumbnail.thumbnails[0].url}`)
-                    .setFooter(`${songInfo.videoDetails.title}`)
+                    .setDescription(`**Now Playing:** ${songInfo.videoDetails.title}`)
+                    .setTimestamp()
                     .setColor('BLUE');
 
                 const sentMusicEmbed = await message.channel.send(musicEmbed);
                 sentMusicEmbed.react('⏹️');
                 sentMusicEmbed.react('⏸️');
+                sentMusicEmbed.react('⏭');
 
                 let filter = (reaction, user) => !user.bot && user.id === message.author.id;
                 const reactionCollector = sentMusicEmbed.createReactionCollector(filter);
@@ -51,13 +42,23 @@ module.exports={
                         dispatcher.resume();
                         reaction.remove();
                         sentMusicEmbed.react('⏸️');
+                        reaction.remove();
+                        sentMusicEmbed.react('⏸️');
                     } else if (reaction.emoji.name === '⏹️') {
                         connection.disconnect();
+                        if (!message.member.voice.channel) return message.channel.send('You need to be in the voice channel where this music is playing to have a say.');
+                        serverQueue.songs = [];
+                        serverQueue.connection.disconnect();
                         sentMusicEmbed.delete();
+                    } else if (reaction.emoji.name == '⏭') {
+                        if (!message.member.voice.channel) return message.channel.send('You need to be in the voice channel where this music is playing to have a say.');
+                        if (!serverQueue){
+                            return message.channel.send(`There are no songs in the queue 😔`);
+                        }
+                        serverQueue.connection.dispatcher.end();
                     } else {
                         reaction.remove();
                     }
-
                 });
 
                 dispatcher.on('finish', () => {
@@ -70,3 +71,42 @@ module.exports={
         }
     }
 };
+
+/* working on dispatcher WIP WIP WIP WIP WIP
+const juke = async (guild, song) => {
+    const songQueue = queue.get(guild.id);
+
+    if (!song) {
+        songQueue.voiceChannel.leave();
+        queue.delete(guild.id);
+        return;
+    }
+    const stream = ytdl(song.url, {filter: 'audioonly' });
+    songQueue.connection.play(stream, { seek: 0, volume: 0.5})
+    .on('finish', () => {
+        songQueue.songs.shift();
+        juke(guild, songQueue.songs[0]);
+    });
+    await songQueue.text_channel.send(`🎶 Now Playing`)
+} 
+
+/ searching for music via ytdl
+                if (ytdl.validateURL(message.content)) {
+                    const songInfo = await ytdl.getBasicInfo(message.content);
+                    song = { title: songInfo.videoDetails.title, url: songInfo.videoDetails.video_url }
+                } else {
+                    / if the video is not a URL then use keywords to find a video
+                    const videoFinder = async (query) =>{
+                        const videoResult = await ytSearch(query);
+                        return (videoResult.videos.length > 1) ? videoResult.videos[0] : null;
+                    }
+                    const video = await videoFinder(args.join(' '));
+                    if(video){
+                        song = { title: video.title, url: video.url }
+                    } else {
+                    message.channel.send('Error finding that song.');
+                    }
+                } 
+                const dispatcher = connection.play(ytdl(song.url, { format: 'audioonly' }));
+
+*/
