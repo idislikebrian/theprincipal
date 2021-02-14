@@ -20,8 +20,8 @@ module.exports={
             
             if (connection) {
                 // searching for music via ytdl
-                if (ytdl.validateURL(message.content)) {
-                    const songInfo = await ytdl.getBasicInfo(message.content);
+                if (ytdl.validateURL(args[0])) {
+                    const songInfo = await ytdl.getBasicInfo(args[0]);
                     song = { title: songInfo.videoDetails.title, url: songInfo.videoDetails.video_url }
                 } else {
                     // if the video is not a URL then use keywords to find a video
