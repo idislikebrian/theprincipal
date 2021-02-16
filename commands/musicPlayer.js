@@ -15,7 +15,7 @@ module.exports={
             if (connection) {
                 if (!args.length) return message.channel.send('You need to send a link to a YouTube video as well.');
                 let song = {};
-                
+
                 const dispatcher = connection.play(ytdl(message.content, { format: 'audioonly' }));
                 const songInfo = await ytdl.getBasicInfo(message.content);
                 const musicEmbed = new MessageEmbed()
