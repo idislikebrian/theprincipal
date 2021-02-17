@@ -8,6 +8,10 @@ module.exports={
     name: 'musicPlayer',
     description: "Helps you play music together",
     async execute (message, args){
+        if(message.channel != "810356148523106327"){
+            message.delete()
+            return message.channel.send(`You need to be in <#810356148523106327> channel`)
+        }
         console.log(args)
         const voiceChannel = message.member.voice.channel;
         if (voiceChannel) {
@@ -15,12 +19,28 @@ module.exports={
             if (connection) {
                 if (!args.length) return message.channel.send('You need to send a link to a YouTube video as well.');
                 let song = {};
-
-                const dispatcher = connection.play(ytdl(message.content, { format: 'audioonly' }));
-                const songInfo = await ytdl.getBasicInfo(message.content);
+                // searching for music via ytdl
+                if (ytdl.validateURL(args[0])) {
+                    const songInfo = await ytdl.getBasicInfo(args[0]);
+                    song = { title: songInfo.videoDetails.title, url: songInfo.videoDetails.video_url }
+                } else {
+                    // if the video is not a URL then use keywords to find a video
+                    const videoFinder = async (query) =>{
+                        const videoResult = await ytSearch(query);
+                        return (videoResult.videos.length > 1) ? videoResult.videos[0] : null;
+                    }
+                    const video = await videoFinder(args.join(' '));
+                    if(video){
+                        song = { title: video.title, url: video.url }
+                    } else {
+                    message.channel.send('Error finding that song.');
+                    }
+                } 
+                const dispatcher = connection.play(ytdl(song.url, { format: 'audioonly' }));
+                const songInfo = await ytdl.getBasicInfo(song.url);
                 const musicEmbed = new MessageEmbed()
                     .setTitle('📻 Jukebox')
-                    .setImage(`${songInfo.videoDetails.thumbnail.thumbnails[0].url}`)
+                    .setImage(`${songInfo.videoDetails.thumbnails[0].url}`)
                     .setDescription(`**Now Playing:** ${songInfo.videoDetails.title}`)
                     .setTimestamp()
                     .setColor('BLUE');
@@ -75,7 +95,6 @@ module.exports={
 /* working on dispatcher WIP WIP WIP WIP WIP
 const juke = async (guild, song) => {
     const songQueue = queue.get(guild.id);
-
     if (!song) {
         songQueue.voiceChannel.leave();
         queue.delete(guild.id);
@@ -89,24 +108,4 @@ const juke = async (guild, song) => {
     });
     await songQueue.text_channel.send(`🎶 Now Playing`)
 } 
-
-/ searching for music via ytdl
-                if (ytdl.validateURL(message.content)) {
-                    const songInfo = await ytdl.getBasicInfo(message.content);
-                    song = { title: songInfo.videoDetails.title, url: songInfo.videoDetails.video_url }
-                } else {
-                    / if the video is not a URL then use keywords to find a video
-                    const videoFinder = async (query) =>{
-                        const videoResult = await ytSearch(query);
-                        return (videoResult.videos.length > 1) ? videoResult.videos[0] : null;
-                    }
-                    const video = await videoFinder(args.join(' '));
-                    if(video){
-                        song = { title: video.title, url: video.url }
-                    } else {
-                    message.channel.send('Error finding that song.');
-                    }
-                } 
-                const dispatcher = connection.play(ytdl(song.url, { format: 'audioonly' }));
-
 */
