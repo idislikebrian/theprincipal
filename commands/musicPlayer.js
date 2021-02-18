@@ -1,6 +1,9 @@
 const { MessageEmbed } = require('discord.js');
 const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
+const spdl = require('spdl-core');
+
+spdl.setCredentials(process.env.spotify_cliendID, process.env.spotify_clientSecret)
 
 const queue = new Map();
 
