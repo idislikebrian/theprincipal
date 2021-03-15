@@ -5,7 +5,7 @@ module.exports={
     description: "Sends a message that was inputted to a channel.",
     execute(message, args){
         console.log(args)
-        if(message.member.roles.cache.some(r => r.name === "Admin")){
+        if(message.member.roles.cache.some(r => r.name === "Admin" || r.name === "Facilitator")){
             if (args.length==0){
                 const Embed = new Discord.MessageEmbed()
                     .setColor(0xFFC300)
