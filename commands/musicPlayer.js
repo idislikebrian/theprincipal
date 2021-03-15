@@ -20,7 +20,9 @@ module.exports={
         if (voiceChannel) {
             const connection = await voiceChannel.join();
             if (connection) {
-                if (!args.length) return message.channel.send('You need to send a link to a YouTube video as well.');
+                const serverQueue = queue.get(message.guild.id);                
+                
+                if (!args.length) return message.channel.send('You need to tell me what song you want to play, br0.');
                 let song = {};
                 // searching for music via ytdl
                 if (ytdl.validateURL(args[0])) {

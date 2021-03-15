@@ -5,6 +5,8 @@ const prefix = '~';
 
 const fs = require('fs');
 
+const memberCounter = require('./counters/member-counter');
+
 client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -16,6 +18,7 @@ for (const file of commandFiles) {
 client.once('ready', () => {
     console.log('The Principal is online!');
     client.user.setActivity('YouTube', { type: 'WATCHING' });
+    memberCounter(client);
 });
 
 client.on('guildMemberAdd', member => {
