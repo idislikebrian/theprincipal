@@ -13,7 +13,7 @@ module.exports = async (client) =>{
         let facilitatRoleID = '709389579651645502';
         const modCount = guild.roles.cache.get(facilitatRoleID).members.size;
         let atyStaffRoleID = '748232779807981698';
-        const staffCount = guild.roles.cache.get(atyStaffRoleID.members.size);
+        const staffCount = guild.roles.cache.get(atyStaffRoleID).members.size;
         memChannel.setName(`👥 Members: ${memberCount.toLocaleString()}`)
         botChannel.setName(`🤖 Bots: ${botCount.toLocaleString()}`)
         patrChannel.setName(`💯 Patrons: ${patronCount.toLocaleString()}`)
