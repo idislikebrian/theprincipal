@@ -14,11 +14,11 @@ module.exports = async (client) =>{
         const modCount = guild.roles.cache.get(facilitatRoleID).members.size;
         let atyStaffRoleID = '748232779807981698';
         const staffCount = guild.roles.cache.get(atyStaffRoleID).members.size;
-        memChannel.setName(`👥 Members: ${memberCount.toLocaleString()}`)
-        botChannel.setName(`🤖 Bots: ${botCount.toLocaleString()}`)
-        patrChannel.setName(`💯 Patrons: ${patronCount.toLocaleString()}`)
-        staffChannel.setName(`🎨 Staff: ${staffCount.toLocaleString()}`)
-        modChannel.setName(`😎 Facilitator: ${modCount.toLocaleString()}`)
+        memChannel.setName(`👥 MEMBERS: ${memberCount.toLocaleString()}`)
+        botChannel.setName(`🤖 BOTS: ${botCount.toLocaleString()}`)
+        patrChannel.setName(`💯 PATRONS: ${patronCount.toLocaleString()}`)
+        staffChannel.setName(`🎨 STAFF: ${staffCount.toLocaleString()}`)
+        modChannel.setName(`😎 FACILITATOR: ${modCount.toLocaleString()}`)
         console.log('Updating Member Count');
     }, 60000);
 }
