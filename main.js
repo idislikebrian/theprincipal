@@ -60,6 +60,10 @@ client.on('message', message => {
         client.commands.get('join').execute(message, args, client);
         
     }
+    if (command === 'purge'){
+        client.commands.get('purge').execute(message, args, client);
+        
+    }
 });
 
 client.login(process.env.token);
