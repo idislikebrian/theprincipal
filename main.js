@@ -18,7 +18,7 @@ for (const file of commandFiles) {
 client.once('ready', () => {
     console.log('The Principal is online!');
     client.user.setActivity('YouTube', { type: 'WATCHING' });
-    memberCounter(client);
+    // memberCounter(client);
 });
 
 client.on('guildMemberAdd', member => {
