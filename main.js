@@ -5,16 +5,17 @@ const prefix = '~';
 
 const fs = require('fs');
 
-const memberCounter = require('./counters/member-counter');
+// const memberCounter = require('./counters/member-counter');
 
 client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
+
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
-
     client.commands.set(command.name, command);
 }
+
 client.once('ready', () => {
     console.log('The Principal is online!');
     client.user.setActivity('YouTube', { type: 'WATCHING' });
