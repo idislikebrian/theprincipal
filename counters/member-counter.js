@@ -1,5 +1,5 @@
-module.exports = async (client) =>{
-/*     const guild = client.guilds.cache.get('708336363296260178');
+/* module.exports = async (client) =>{
+    const guild = client.guilds.cache.get('708336363296260178');
     setInterval(() =>{
         const memberCount = guild.members.cache.filter(member => !member.user.bot).size;
         const botCount = guild.members.cache.filter(member => member.user.bot).size;
@@ -20,5 +20,5 @@ module.exports = async (client) =>{
         staffChannel.setName(`🎨 STAFF: ${staffCount.toLocaleString()}`)
         modChannel.setName(`😎 FACILITATOR: ${modCount.toLocaleString()}`)
         console.log('Updating Member Count');
-    }, 60000); */
-}
+    }, 60000); 
+} */
