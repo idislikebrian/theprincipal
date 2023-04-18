@@ -1,6 +1,6 @@
 language = "nodejs"
 run = "npm start"
-entrypoint = "index.js"
+entrypoint = "main.js"
 hidden = [".config", "package-lock.json"]
 
 [languages]
