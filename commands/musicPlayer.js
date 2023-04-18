@@ -63,7 +63,13 @@ module.exports={
             queueConstructor.songs.push(song);
     
             try {
-                const connection = await voiceChannel.join();
+                let connection;
+                try {
+                    connection = await voiceChannel.join();
+                } catch (error) {
+                    console.error('Error joining voice channel:', error);
+                    return message.channel.send('I could not join the voice channel.');
+                }
                 queueConstructor.connection = connection;
                 juke(message.guild, queueConstructor.songs[0]);
             } catch (err) {
