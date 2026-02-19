@@ -1,25 +1,24 @@
-const Discord = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
-module.exports={
-    name: 'poll',
-    description: "This is a poll command.",
-    execute(message, args){
-        console.log(args)
-        if (args.length==0){
-            const Embed = new Discord.MessageEmbed()
-                .setColor(0xFFC300)
-                .setTitle("Looking to make a poll?")
-                .setDescription("Type *~poll {your question goes here}* to initiate a simple yes or no poll");
-            message.channel.send(Embed);
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('poll')
+        .setDescription('Create a simple yes/no poll.')
+        .addStringOption(option =>
+            option.setName('question')
+                .setDescription('The question you want to ask')
+                .setRequired(true)),
+    async execute(interaction) {
+        const question = interaction.options.getString('question');
 
-            } else { 
-            let msgArgs = args.slice(0).join(" ");
+        const embed = new EmbedBuilder()
+            .setColor(0xFFC300)
+            .setTitle('📋 New Poll')
+            .setDescription(`**${question}**`)
+            .setFooter({ text: `Asked by ${interaction.user.tag}` });
 
-            message.channel.send("📋 " + "**" + msgArgs + "**").then(MessageReaction => {
-                MessageReaction.react("👍");
-                MessageReaction.react("👎");
-                message.delete({ timeout: 3500, reason: 'It had to be done.' });
-            } )
-        }
-    }
-}
+        const message = await interaction.reply({ embeds: [embed], fetchReply: true });
+        await message.react('👍');
+        await message.react('👎');
+    },
+};

@@ -2,6 +2,7 @@ language = "nodejs"
 run = "npm start"
 entrypoint = "main.js"
 hidden = [".config", "package-lock.json"]
+modules = ["nodejs-20"]
 
 [languages]
 
@@ -80,3 +81,34 @@ message = "We see that you are using require(...) inside your code. We currently
 
 [deployment]
 run = ["sh", "-c", "node index.js"]
+
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Discord Bot"
+
+[[workflows.workflow]]
+name = "Discord Bot"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node main.js"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
