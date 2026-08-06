@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Client, GatewayIntentBits, Collection, REST, Routes, EmbedBuilder } = require('discord.js');
 const express = require('express');
 const fs = require('fs');
@@ -26,7 +27,7 @@ const client = new Client({
 
 client.commands = new Collection();
 const commands = [];
-const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js') && file !== 'musicPlayer.js');
 
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
