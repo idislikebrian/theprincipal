@@ -4,10 +4,13 @@ const {
     createAudioPlayer, 
     createAudioResource, 
     AudioPlayerStatus, 
+    VoiceConnectionStatus,
     NoSubscriberBehavior,
-    getVoiceConnection
+    getVoiceConnection,
+    StreamType,
+    entersState
 } = require('@discordjs/voice');
-const play = require('play-dl');
+const audio = require('./utils/youtube-stream');
 
 const queue = new Map();
 
@@ -17,7 +20,7 @@ module.exports = {
         .setDescription('Music player commands')
         .addSubcommand(sub =>
             sub.setName('play')
-                .setDescription('Play a song from YouTube or Spotify')
+                .setDescription('Play a song from YouTube, SoundCloud, or search')
                 .addStringOption(opt => opt.setName('query').setDescription('Song title or URL').setRequired(true)))
         .addSubcommand(sub =>
             sub.setName('skip')
@@ -41,18 +44,27 @@ module.exports = {
             await interaction.deferReply();
             const query = interaction.options.getString('query');
             
-            let song = {};
+            let song = null;
+            
+            // Search for the song
             try {
-                const searchResults = await play.search(query, { limit: 1 });
-                if (searchResults.length === 0) return interaction.editReply('No results found.');
+                console.log('[Music] Searching for:', query);
+                const results = await audio.search(query, { limit: 1 });
+                
+                if (results.length === 0) {
+                    return interaction.editReply('No results found. Try a direct URL or different search terms.');
+                }
+                
                 song = {
-                    title: searchResults[0].title,
-                    url: searchResults[0].url,
-                    duration: searchResults[0].durationRaw
+                    title: results[0].title,
+                    url: results[0].url,
+                    duration: results[0].durationRaw,
+                    source: results[0].extractor || 'unknown'
                 };
+                
             } catch (err) {
-                console.error(err);
-                return interaction.editReply('Error searching for that song.');
+                console.error('[Music] Search error:', err);
+                return interaction.editReply('Error searching for that song. Try a SoundCloud or Bandcamp URL instead.');
             }
 
             if (!serverQueue) {
@@ -77,18 +89,42 @@ module.exports = {
                     });
 
                     queueContruct.connection = connection;
-                    connection.subscribe(queueContruct.player);
+                    
+                    // Log connection state changes
+                    connection.on('stateChange', (oldState, newState) => {
+                        console.log(`[Voice] Connection state: ${oldState.status} -> ${newState.status}`);
+                    });
+                    
+                    // Wait for connection to be ready
+                    console.log('[Voice] Waiting for connection to be ready...');
+                    await entersState(connection, VoiceConnectionStatus.Ready, 20_000);
+                    console.log('[Voice] Connection ready!');
+                    
+                    // Subscribe player to connection
+                    const subscription = connection.subscribe(queueContruct.player);
+                    console.log('[Voice] Player subscribed:', subscription ? 'YES' : 'NO');
+                    
+                    // Log player state changes
+                    queueContruct.player.on('stateChange', (oldState, newState) => {
+                        console.log(`[Player] State: ${oldState.status} -> ${newState.status}`);
+                    });
+                    
+                    queueContruct.player.on('error', (error) => {
+                        console.error('[Player] Error:', error.message);
+                    });
 
                     playSong(guildId, queueContruct.songs[0]);
-                    await interaction.editReply(`🎶 Started playing: **${song.title}**`);
+                    const emoji = getSourceEmoji(song.source);
+                    await interaction.editReply(`${emoji} Started playing: **${song.title}**`);
                 } catch (err) {
-                    console.error(err);
+                    console.error('[Voice] Connection error:', err);
                     queue.delete(guildId);
-                    return interaction.editReply('Could not join voice channel.');
+                    return interaction.editReply('Could not join voice channel: ' + err.message);
                 }
             } else {
                 serverQueue.songs.push(song);
-                return interaction.editReply(`✅ **${song.title}** added to queue!`);
+                const emoji = getSourceEmoji(song.source);
+                return interaction.editReply(`${emoji} **${song.title}** added to queue!`);
             }
         } else if (subcommand === 'skip') {
             if (!serverQueue) return interaction.reply('Nothing to skip.');
@@ -105,6 +141,13 @@ module.exports = {
     },
 };
 
+function getSourceEmoji(source) {
+    if (source.includes('soundcloud')) return '☁️';
+    if (source.includes('youtube')) return '🎶';
+    if (source.includes('bandcamp')) return '🎸';
+    return '🎵';
+}
+
 async function playSong(guildId, song) {
     const serverQueue = queue.get(guildId);
     if (!song) {
@@ -112,21 +155,38 @@ async function playSong(guildId, song) {
             const conn = getVoiceConnection(guildId);
             if (conn) conn.destroy();
             queue.delete(guildId);
-        }, 300000); // Leave after 5 mins of inactivity
+        }, 300000);
         return;
     }
 
     try {
-        const stream = await play.stream(song.url);
-        const resource = createAudioResource(stream.stream, { inputType: stream.type });
+        console.log('[Music] Streaming from', song.source, ':', song.title);
+        console.log('[Music] Current player state:', serverQueue.player.state.status);
+        
+        const stream = await audio.stream(song.url);
+        console.log('[Music] Stream created, type:', stream.type);
+        
+        // Create audio resource - use Raw for mp3 streams from yt-dlp
+        const resource = createAudioResource(stream.stream, { 
+            inputType: StreamType.Raw,
+            inlineVolume: true 
+        });
+        
+        console.log('[Music] Audio resource created');
+        console.log('[Music] Playing...');
+        
         serverQueue.player.play(resource);
+        
+        console.log('[Music] Player state after play:', serverQueue.player.state.status);
 
         serverQueue.player.once(AudioPlayerStatus.Idle, () => {
+            console.log('[Music] Song ended, playing next...');
             serverQueue.songs.shift();
             playSong(guildId, serverQueue.songs[0]);
         });
     } catch (err) {
-        console.error(err);
+        console.error('[Music] Playback error:', err);
+        serverQueue.textChannel.send(`❌ Error playing **${song.title}**. Skipping...`);
         serverQueue.songs.shift();
         playSong(guildId, serverQueue.songs[0]);
     }
