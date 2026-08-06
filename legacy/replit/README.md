@@ -1,6 +1,8 @@
-# replit.md
+# Archived Replit configuration
 
-## Overview
+These files are preserved for historical reference only. Production no longer uses Replit; the live bot runs from `main.js` under the host PM2/systemd setup.
+
+## Historical overview
 
 The Principal is a Discord bot built for the "Workshop" Discord server (CUSN community). It uses discord.js v14 with slash commands and provides music playback, polls, moderation tools, and utility commands. The bot runs as a Node.js application with a minimal Express web server for keep-alive/health-check purposes.
 
@@ -48,7 +50,7 @@ Preferred communication style: Simple, everyday language.
 - Configuration relies entirely on environment variables.
 
 ### Environment Variables
-- `DISCORD_BOT_TOKEN` — Required. The Discord bot token for authentication.
+- Discord bot token — required for authentication.
 - `PORT` — Optional. Defaults to 5000 for the Express server.
 
 ## External Dependencies
