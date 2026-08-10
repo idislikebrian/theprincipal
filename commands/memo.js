@@ -1,18 +1,28 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
-const { JSDOM } = require('jsdom');
 
 async function fetchWordOfTheDay() {
     try {
-        const response = await axios.get('https://www.merriam-webster.com/word-of-the-day/');
-        const dom = new JSDOM(response.data);
-        const document = dom.window.document;
-        
-        const word = document.querySelector('h1').textContent.trim();
-        const speech = document.querySelector('span.main-attr').textContent.trim();
-        const definition = document.querySelector('p').textContent.trim();
-        
-        return { word, speech, definition };
+        // The HTML page is behind a Cloudflare JS challenge; the RSS feed is not.
+        const response = await axios.get('https://www.merriam-webster.com/wotd/feed/rss2', {
+            headers: { 'User-Agent': 'Mozilla/5.0' },
+        });
+        const itemMatch = response.data.match(/<item>([\s\S]*?)<\/item>/);
+        if (!itemMatch) throw new Error('No item found in word-of-the-day feed');
+        const item = itemMatch[1];
+
+        const wordMatch = item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/);
+        const defMatch = item.match(/<merriam:shortdef><!\[CDATA\[(.*?)\]\]><\/merriam:shortdef>/);
+        if (!wordMatch || !defMatch) throw new Error('Could not parse word-of-the-day feed item');
+
+        // Part of speech sits between the pronunciation and the definition, e.g. "...\ked-uh-GAH...\ • <em>adjective</em><br"
+        const speechMatch = item.match(/&#149;\s*<em>([^<]+)<\/em>\s*<br/);
+
+        return {
+            word: wordMatch[1].trim(),
+            speech: speechMatch ? speechMatch[1].trim() : 'unknown',
+            definition: defMatch[1].trim(),
+        };
     } catch (error) {
         console.error('Error fetching word of the day:', error);
         return { word: 'N/A', speech: 'N/A', definition: 'Unable to fetch word of the day' };
@@ -21,19 +31,19 @@ async function fetchWordOfTheDay() {
 
 async function fetchRandomQuestion() {
     try {
-        const response = await axios.get('https://conversationstartersworld.com/random-question-generator/');
-        const dom = new JSDOM(response.data);
-        const document = dom.window.document;
-        
-        const h2 = document.querySelector('h2#h-your-random-question');
-        if (h2) {
-            let question = h2.nextSibling.textContent.trim();
-            if (question.length > 1024) {
-                question = question.substring(0, 1021) + '...';
-            }
-            return question;
+        // The generator page now renders client-side from this plain-text list; there is no
+        // server-rendered question to scrape from the page HTML anymore.
+        const response = await axios.get('https://conversationstartersworld.com/wp-content/uploads/csw-questions.txt', {
+            headers: { 'User-Agent': 'Mozilla/5.0' },
+        });
+        const questions = response.data.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+        if (!questions.length) throw new Error('No questions found in feed');
+
+        let question = questions[Math.floor(Math.random() * questions.length)];
+        if (question.length > 1024) {
+            question = question.substring(0, 1021) + '...';
         }
-        return 'What\'s something new you learned today?';
+        return question;
     } catch (error) {
         console.error('Error fetching random question:', error);
         return 'What\'s something new you learned today?';
