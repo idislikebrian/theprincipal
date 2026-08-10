@@ -4,6 +4,8 @@ The Principal is the staff-facing moderation and operations bot for the Workshop
 
 It runs as a Node.js application, starts from `main.js`, reads configuration from environment variables, and exposes a small Express health endpoint for the host process manager.
 
+**Process management:** this bot is supervised by the systemd-managed PM2 daemon (`pm2-root.service`), alongside `fred-from-hr` and `jowcm-hotline`. Before running any `pm2` command against it, read `/root/AGENTS.md` — the interactive `pm2` CLI on this box has a known split-brain trap that makes `pm2 list`/`restart`/`stop` silently lie about what's running.
+
 ## Active Commands
 
 All active commands are slash commands.
